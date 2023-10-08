@@ -1,0 +1,37 @@
+# Application
+server:
+  port: 8081
+spring:
+  # Database
+  datasource:
+    url: jdbc:postgresql://${DB_URL:localhost:5432/ts_property_management}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:asdasd123}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  # Kafka Consumer Configuration
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonSerializer
+      group-id: ${KAFKA_GROUP_ID:message-consumer-group}
+      properties:
+        spring.json.trusted.packages: "*"
+      auto-offset-reset: earliest
+  # Email
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:soondet2@gmail.com}
+    password: ${MAIL_PASSWORD:vwdvapekdmckidnq}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+email:
+  address: ${EMAIL_TO:soondet@mail.ru}
