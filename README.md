@@ -35,16 +35,16 @@ a. GET запрос: Выводит список отправленных соо
         │           └── messageservicereceiver
         │               ├── MessageServiceReceiverApplication.java  //главный класс приложения с методом main.
         │               ├── config
-        │               │   └── KafkaConfig.java                    //класс содержит конфигурацию для Kafka-продюсеров,Определяет фабрики Kafka-продюсеро
+        │               │   └── KafkaConfig.java                    //класс содержит конфигурацию для Kafka-продюсеров, определяет фабрики Kafka-продюсеро
         │               ├── controller
         │               │   └── MessageController.java              //класс контроллера, который определяет конечные точки REST API 
         │               ├── entity
-        │               │   ├── Information.java                    //класс содержащий в себе поля Id,Отправитель(string),Сообщение(string) для POST запроса send-message и для сериализаций
-        │               │   └── Message.java                        //сущностный класс для взаимодействия с базой данных,имеет поля id, sender, message, emailResponseCode
+        │               │   ├── Information.java                    //класс содержащий в себе поля Id, Отправитель(string), Сообщение(string) для POST запроса send-message и для сериализации
+        │               │   └── Message.java                        //сущностный класс для взаимодействия с базой данных, имеет поля id, sender, message, emailResponseCode
         │               ├── impl
-        │               │   └── MessageServiceImpl.java             //класс реализует интерфейс MessageService, содержит бизнес-логику для отправки сообщений и взаимодействия с темами Kafka
+        │               │   └── MessageServiceImpl.java             //класс реализует интерфейс MessageService и содержит бизнес-логику для отправки сообщений и взаимодействия с темами Kafka
         │               ├── repository
-        │               │   └── MessageRepository.java              //Интерфейс репозитория, используемый для операций CRUD с сущностью Message
+        │               │   └── MessageRepository.java              //интерфейс репозитория, используемый для операций CRUD с сущностью Message
         │               └── service
         │                   └── MessageService.java                 //сервисный интерфейс, который определяет методы
         └── resources
@@ -52,7 +52,7 @@ a. GET запрос: Выводит список отправленных соо
  ```
  
  Для корректной работы вашего приложения в IntelliJ IDEA или другой среде разработки вам нужно задать значения переменных окружения или использовать те, что указаны после двоеточия файле application.yml. Вы можете поступить следующими способами:
-- Установите значения переменных окружения в вашей среде разработки, если хотите использовать конкретные значения для  `KAFKA_BOOTSTRAP_SERVERS `,  `DB_URL `,  `DB_USERNAME` и `DB_PASSWORD `.
+- Установите значения переменных окружения в вашей среде разработки, если хотите использовать конкретные значения для  `KAFKA_BOOTSTRAP_SERVERS`,  `DB_URL`,  `DB_USERNAME` и `DB_PASSWORD`.
 - Если не установлены переменные окружения, то будут использованы значения по умолчанию, которые указаны после двоеточия 
 - Вы также можете оставить значения по умолчанию, если они удовлетворяют вашим требованиям.
  ```
@@ -75,7 +75,7 @@ a. GET запрос: Выводит список отправленных соо
  | API | METHOD | PARAMETER |DESCRIPTION|
 | ------ | ------ | ------ | ------ |
 | /send-message | POST |@RequestBody Information information|Принимает application/xml сообщение, сохраняет в таблице message, сообщение отправляется в Kafka на указанный топик `message.send`
-| /list | GET |@RequestParam(required = false) String sender|Если sender не null выводит все сообщений этого sender, а если null то последние 10|
+| /list | GET |@RequestParam(required = false) String sender|Если поле "sender" не равно null, то будет выведен список всех сообщений, отправленных этим отправителем. Если поле "sender" равно null, то будут выведены последние 10 сообщений.|
 
 > NOTE: чтобы принимался application/xml использовался 
     	<dependency>
@@ -83,7 +83,7 @@ a. GET запрос: Выводит список отправленных соо
 			<artifactId>jackson-dataformat-xml</artifactId>
 		</dependency>
 		
-### Структура message-service-receiver
+### Структура message-service-sender
 
  ```
 ├── pom.xml
@@ -100,9 +100,9 @@ a. GET запрос: Выводит список отправленных соо
        │               ├── controller
        │               │   └── MessageController.java            //класс контроллера, который определяет конечные точки REST API 
        │               ├── entity
-       │               │   ├── Message.java                       //сущностный класс для взаимодействия с базой данных,имеет поля id, sender, message, emailResponseCode
+       │               │   ├── Message.java                       //сущностный класс для взаимодействия с базой данных, имеет поля id, sender, message, emailResponseCode
        │               │   └── listener
-       │               │       └── Information.java               //класс содержащий в себе поля Id,Отправитель(string),Сообщение(string) и для десериализаций
+       │               │       └── Information.java               //класс содержащий в себе поля Id, Отправитель(string), Сообщение(string) и для десериализации
        │               ├── impl
        │               │   ├── EmailServiceImpl.java              //класс реализует интерфейс EmailService и предоставляет методы для отправки электронных писем
        │               │   └── MessageServiceImpl.java            //класс реализует интерфейс MessageService и предоставляет методы для работы с сообщениями
@@ -117,7 +117,7 @@ a. GET запрос: Выводит список отправленных соо
            └── application.yml 
  ```
  Для корректной работы вашего приложения в IntelliJ IDEA или другой среде разработки вам нужно задать значения переменных окружения или использовать те, что указаны после двоеточия файле application.yml. Вы можете поступить следующими способами:
-- Установите значения переменных окружения в вашей среде разработки, если хотите использовать конкретные значения для KAFKA: `KAFKA_BOOTSTRAP_SERVERS `,  `KAFKA_GROUP_ID`,`DB_URL `;  DB: `DB_USERNAME`, `DB_PASSWORD `; MAIL: `MAIL_USERNAME` , `MAIL_PASSWORD`,  `EMAIL_TO`.
+- Установите значения переменных окружения в вашей среде разработки, если хотите использовать конкретные значения для KAFKA: `KAFKA_BOOTSTRAP_SERVERS `, `KAFKA_GROUP_ID`, `DB_URL`;  DB: `DB_USERNAME`, `DB_PASSWORD`; MAIL: `MAIL_USERNAME` , `MAIL_PASSWORD`, `EMAIL_TO`.
 - `EMAIL_TO` это почта на которую будет отправляться сообщение 
 - Если не установлены переменные окружения, то будут использованы значения по умолчанию, которые указаны после двоеточия 
 - Вы также можете оставить значения по умолчанию, если они удовлетворяют вашим требованиям.
@@ -163,7 +163,7 @@ email:
  
   | API | METHOD | PARAMETER |DESCRIPTION|
 | ------ | ------ | ------ | ------ |
-| @KafkaListener consume()| |Information information|Метод принимает объект типа Information и отправляет сообщение на почту по адресу  `EMAIL_TO ` от имени пользователя  `MAIL_USERNAME ` с темой "Тестовое задание". Если сообщение успешно отправлено, то объект Information с необходимым идентификатором (Id) сохраняется в таблице message с кодом ответа  `emailResponseCode ` равным  `200 `. Если возникает ошибка типа MailException, то код ответа устанавливается в  `400 `, а в случае других исключений (Exception), код ответа устанавливается в  `500 `.
+| @KafkaListener consume()| |Information information|Метод принимает объект типа Information и отправляет сообщение на почту по адресу  `EMAIL_TO` от имени пользователя  `MAIL_USERNAME` с темой "Тестовое задание". Если сообщение успешно отправлено, то объект Information с необходимым идентификатором (Id) сохраняется в таблице message с кодом ответа  `emailResponseCode` равным  `200`. Если возникает ошибка типа MailException, то код ответа устанавливается в  `400`, а в случае других исключений (Exception), код ответа устанавливается в  `500`.
 | /list | GET ||Вывод всех сообщений|
 ## Запуск
 
@@ -185,3 +185,15 @@ docker-compose up -d
 4. Запустить оба Spring Boot приложения
 - message-service-receiver, port:8080
 - message-service-sender, port:8081
+5. API 
+- POST localhost:8080/send-message  application/xml
+
+ ```
+ <Information>
+	<sender>your-sender</sender>
+	<message>your-message</message>
+</Information>
+  ```
+  
+- GET localhost:8080/list or localhost:8080/list?sender=your-sender
+- GET localhost:8081/list
